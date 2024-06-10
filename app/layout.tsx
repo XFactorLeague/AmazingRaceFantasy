@@ -14,6 +14,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pages = getPages() || [];
+
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
