@@ -15,37 +15,19 @@ export default class League {
 
     addContestantRoundScores(contestantTeamsList: Team[], numberOfRounds: number, contestantName: string, handicap: number): void {
 
-        let grandTotal = handicap === undefined ? 0 : handicap;
-        for(let i = 0; i < numberOfRounds; i++) {
-            const roundScore = contestantTeamsList.reduce(
-                (acc: number, x: Team) => {
-                    const teamShouldBeScored = shouldBeScored(contestantTeamsList, x, i);
-    
-                    return teamShouldBeScored ? acc + 10 : acc;
-                }, 0);
-
-            grandTotal += roundScore;
-
-            if (this.rounds.length > i) {
-                const currentRound = this.rounds[i];
-                currentRound.contestantRoundData.push({
-                    name: contestantName,
-                    roundScore: roundScore,
-                    totalScore: grandTotal
-                });
+        this.calculateContestantRoundScores(contestantTeamsList, numberOfRounds, contestantName, handicap, (roundNumber, contestantLeagueData) => {
+            if (this.rounds.length > roundNumber) {
+                const currentRound = this.rounds[roundNumber];
+                currentRound.contestantRoundData.push(contestantLeagueData);
             }
             else {
                 this.rounds.push({
-                    round:i,
-                    contestantRoundData: [{
-                        name: contestantName,
-                        roundScore: roundScore,
-                        totalScore: grandTotal
-                    }]
+                    round:roundNumber,
+                    contestantRoundData: [contestantLeagueData]
                 });
             }
 
-        }
+        });
     }
 
     private calculateContestantRoundScores(
